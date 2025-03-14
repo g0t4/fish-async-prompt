@@ -40,9 +40,11 @@ function __async_prompt_fire --on-event fish_prompt (for var in $async_prompt_on
 end
 
 function __async_prompt_spawn -a cmd
+    echo "cmd: $cmd" >> /dev/stderr
     set -l envs
     begin
         while read line
+            echo "line: $line" >> /dev/stderr
             switch "$line"
                 case fish_bind_mode
                     echo fish_bind_mode $fish_bind_mode
@@ -56,6 +58,8 @@ function __async_prompt_spawn -a cmd
             end
         end
     end | read -lz vars
+    echo "vars: $vars" >> /dev/stderr
+
     echo $vars | env $envs fish -c '
     function __async_prompt_signal
         kill -s "'(__async_prompt_config_internal_signal)'" '$fish_pid' 2>/dev/null
